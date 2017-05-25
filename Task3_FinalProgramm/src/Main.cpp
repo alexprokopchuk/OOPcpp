@@ -4,16 +4,16 @@ int main()
 {  
   Container<Shape *> lShapes;
 
-  RandParamsShapeFactory * fact = new RandParamsShapeFactory;
+  RandParamsShapeFactory factory;
 
   for (int i = 0; i < 10; ++i)
   {
-    lShapes.push_back(fact->createPoint());
-    lShapes.push_back(fact->createCircle());
-    lShapes.push_back(fact->createRectangle());
-    lShapes.push_back(fact->createSquare());
-    lShapes.push_back(fact->createPolyline());
-    lShapes.push_back(fact->createPolygone());
+    lShapes.push_back(factory.createPoint());
+    lShapes.push_back(factory.createCircle());
+    lShapes.push_back(factory.createRectangle());
+    lShapes.push_back(factory.createSquare());
+    lShapes.push_back(factory.createPolyline());
+    lShapes.push_back(factory.createPolygone());
   }
 
   std::cout << "Number of figures: " << lShapes.size() << std::endl << std::endl;
@@ -26,9 +26,7 @@ int main()
   }
   std::cout << "Number of shapes: " << Shape::GetCount() << std::endl;
 
-  std::cout << "Delete shapes." << std::endl;
-
-  delete fact;
+  factory.deleteCreatedShapes();
 
   std::cout << "Number of shapes: " << Shape::GetCount() << std::endl;
 

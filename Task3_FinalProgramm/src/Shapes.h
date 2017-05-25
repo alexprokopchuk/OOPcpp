@@ -6,6 +6,7 @@ class Shape : public virtual Printable
 {
 public:
   Shape();
+  Shape(const Shape & shape) = delete;
   virtual ~Shape();
   static size_t GetCount();
 
@@ -119,7 +120,7 @@ protected:
   virtual void print(std::ostream & os) const override;
 
 private:
-  void addPointImp(const Point & point);
+  void addPointImpl(const Point & point);
 
   Container<Point> m_aNodes;
   int m_nbSegments = 0;
@@ -139,7 +140,7 @@ protected:
   virtual void print(std::ostream & os) const override;
 
 private:
-  void addPointImp(const Point & point);
+  void addPointImpl(const Point & point);
 
   Container<Point> m_aNodes;
   int m_nbSegments = 0;

@@ -25,6 +25,7 @@ public:
   Iterator end() const;
 
 private:
+  void eraseLast();
   class node;
   size_t m_count = 0;
   node * m_pHead = nullptr;
@@ -40,8 +41,8 @@ public:
   node();
   node *& next();
   node *& prev();
-  const node *& next() const;
-  const node *& prev() const;
+  const node * next() const;
+  const node * prev() const;
   T & data();
   const T & data() const;
 
@@ -69,13 +70,13 @@ typename Container<T>::node *& Container<T>::node::prev()
 }
 
 template<typename T>
-const typename Container<T>::node *& Container<T>::node::next() const
+const typename Container<T>::node * Container<T>::node::next() const
 {
   return m_pNext;
 }
 
 template<typename T>
-const typename Container<T>::node *& Container<T>::node::prev() const
+const typename Container<T>::node * Container<T>::node::prev() const
 {
   return m_pPrev;
 }
@@ -124,51 +125,60 @@ Container<T>::Container(size_t count, const T & value)
 }
 
 template<typename T>
+void Container<T>::eraseLast()
+{
+  delete m_pHead;
+  m_pBack = nullptr;
+  m_pHead = nullptr;
+  --m_count;
+}
+
+template<typename T>
 void Container<T>::pop_front()
 {
-  if (!empty())
+  if (empty())
   {
-    if (1 != size())
-    {
-      auto pDummy = m_pHead->next();
-      delete m_pHead;
-      m_pHead = nullptr;
-      --m_count;
-      m_pHead = pDummy;
-      m_pHead->prev() = nullptr;
-    }
-    else
-    {
-      delete m_pHead;
-      m_pBack = nullptr;
-      m_pHead = nullptr;
-      --m_count;
-    }
+    return;
   }
+
+  if (1 != size())
+  {
+    auto pDummy = m_pHead->next();
+    delete m_pHead;
+    m_pHead = nullptr;
+    --m_count;
+    m_pHead = pDummy;
+    m_pHead->prev() = nullptr;
+  }
+  else
+  {
+    eraseLast();
+  }
+
 }
 
 template<typename T>
 void Container<T>::pop_back()
 {
-  if (!empty())
+  if (empty())
   {
-    if (1 != size())
-    {
-      auto pDummy = m_pBack->prev();
-      delete m_pBack;
-      m_pBack = nullptr;
-      --m_count;
-      m_pBack = pDummy;
-      m_pBack->next() = nullptr;
-    }
-    else
-    {
-      delete m_pBack;
-      m_pBack = nullptr;
-      m_pHead = nullptr;
-      --m_count;
-    }
+    return;
   }
+
+  if (1 != size())
+  {
+    auto pDummy = m_pBack->prev();
+    delete m_pBack;
+    m_pBack = nullptr;
+    --m_count;
+    m_pBack = pDummy;
+    m_pBack->next() = nullptr;
+  }
+  else
+  {
+    eraseLast();
+  }
+
 }
 
 template<typename T>

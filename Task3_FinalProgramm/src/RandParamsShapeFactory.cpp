@@ -1,28 +1,23 @@
 #include "RandParamsShapeFactory.h"
 
 
-RandParamsShapeFactory::RandParamsShapeFactory() : m_generator(std::random_device()()), m_uniRealDistr(-100.0, 100.0)
+RandParamsShapeFactory::RandParamsShapeFactory() 
+  : m_generator(std::random_device()()),
+  m_uniRealDistr(-100.0, 100.0)
 {
 }
 
-RandParamsShapeFactory::RandParamsShapeFactory(double leftLimint, double rightLimint) : m_generator(std::random_device()()),
-                                                                                        m_uniRealDistr(std::min(leftLimint, rightLimint),
-                                                                                                       std::max(leftLimint, rightLimint))
+RandParamsShapeFactory::RandParamsShapeFactory(double leftLimint, double rightLimint) 
+  : m_generator(std::random_device()()),
+  m_uniRealDistr(std::min(leftLimint, rightLimint),
+  std::max(leftLimint, rightLimint))
 {
 
 }
 
 RandParamsShapeFactory::~RandParamsShapeFactory()
 {
-  if (!m_createdShapes.empty())
-  {
-    size_t containerSize = m_createdShapes.size();
-    for (size_t idx = 0; idx < containerSize; ++idx)
-    {
-      delete m_createdShapes.front();
-      m_createdShapes.pop_front();
-    }
-  }
+  deleteCreatedShapes();
 }
 
 Shape * RandParamsShapeFactory::createPoint()
@@ -36,18 +31,18 @@ Shape * RandParamsShapeFactory::createPoint()
 Shape * RandParamsShapeFactory::createCircle()
 {
   Point * centerPoint = nullptr;
+  Shape * pCircle = nullptr;
   try
   {
     centerPoint = createRandomPoint();
   }
   catch (const std::bad_cast & e)
   {
-    std::cout << e.what() << std::endl;
-    return new BadShape("Bad Circle.\r\n");
+    pCircle = new BadShape("Bad Circle. " + std::string(e.what()) + "\r\n");
+    return registerShape(pCircle);
   }
   auto radius = m_uniRealDistr(m_generator);
-
-  Shape * pCircle = nullptr;
+ 
   try
   {
     pCircle = new Circle(*centerPoint, radius);
@@ -64,6 +59,7 @@ Shape * RandParamsShapeFactory::createRectangle()
 {
   Point * firstPoint = nullptr;
   Point * secondPoint = nullptr;
+  Shape * pRectangle = nullptr;
   try
   {
     firstPoint = createRandomPoint();
@@ -71,11 +67,10 @@ Shape * RandParamsShapeFactory::createRectangle()
   }
   catch (const std::bad_cast & e)
   {
-    std::cout << e.what() << std::endl;
-    return new BadShape("Bad Rectangle.\r\n");
+    pRectangle = new BadShape("Bad Rectangle. " + std::string(e.what()) + "\r\n");
+    return pRectangle;
   }
   
-  Shape * pRectangle = nullptr;
   try
   {
     pRectangle = new Rectangle(*firstPoint, *secondPoint);
@@ -92,6 +87,7 @@ Shape * RandParamsShapeFactory::createSquare()
 {
   Point * firstPoint = nullptr;
   Point * secondPoint = nullptr;
+  Shape * pSquare = nullptr;
   try
   {
     firstPoint = createRandomPoint();
@@ -99,11 +95,10 @@ Shape * RandParamsShapeFactory::createSquare()
   }
   catch (const std::bad_cast & e)
   {
-    std::cout << e.what() << std::endl;
-    return new BadShape("Bad Rectangle.\r\n");
+    pSquare = new BadShape("Bad Square. " + std::string(e.what()) + "\r\n");
+    return registerShape(pSquare);
   }
 
-  Shape * pSquare = nullptr;
   try
   {
     pSquare = new Rectangle(*firstPoint, *secondPoint);
@@ -119,6 +114,7 @@ Shape * RandParamsShapeFactory::createSquare()
 Shape * RandParamsShapeFactory::createPolyline()
 {
   Polyline polyLine;
+  Shape * pPolyline = nullptr;
 
   std::uniform_int_distribution<int> uId(1, 100);
   auto nbOfPoints = uId(m_generator);
@@ -132,13 +128,12 @@ Shape * RandParamsShapeFactory::createPolyline()
     }
     catch (const std::bad_cast & e)
     {
-      std::cout << e.what() << std::endl;
-      return new BadShape("Bad Polyline.\r\n");
+      pPolyline = new BadShape("Bad Polyline. " + std::string(e.what()) + "\r\n");
+      return  registerShape(pPolyline);
     }
     polyLine.addPoint(*newPoint);
   }
 
-  Shape * pPolyline = nullptr;
   try
   {
     pPolyline = new Polyline(polyLine);
@@ -154,6 +149,7 @@ Shape * RandParamsShapeFactory::createPolyline()
 Shape * RandParamsShapeFactory::createPolygone()
 {
   Polygon polygon;
+  Shape * pPolygon = nullptr;
 
   std::uniform_int_distribution<int> uId(1, 1000);
   auto nbOfPoints = uId(m_generator);
@@ -167,8 +163,8 @@ Shape * RandParamsShapeFactory::createPolygone()
     }
     catch (const std::bad_cast & e)
     {
-      std::cout << e.what() << std::endl;
-      return new BadShape("Bad Polygon.\r\n");
+      pPolygon = new BadShape("Bad Polygon. " + std::string(e.what()) + "\r\n");
+      return registerShape(pPolygon);
     }
     polygon.addPoint(*newPoint);
   }
@@ -181,7 +177,6 @@ Shape * RandParamsShapeFactory::createPolygone()
     new BadShape("Bad Polygon. " + std::string(e.what()) + "\r\n");
   }
 
-  Shape * pPolygon = nullptr;
   try
   {
     pPolygon = new Polygon(polygon);
@@ -192,6 +187,21 @@ Shape * RandParamsShapeFactory::createPolygone()
     pPolygon = new BadShape("Bad Polygon. " + std::string(e.what()) + "\r\n");
   }
   return registerShape(pPolygon);
+}
+
+void RandParamsShapeFactory::deleteCreatedShapes()
+{
+  if (m_createdShapes.empty())
+  {
+    return;
+  }
+  size_t containerSize = m_createdShapes.size();
+  for (; 0 < containerSize; --containerSize)
+  {
+    delete m_createdShapes.front();
+    m_createdShapes.pop_front();
+  }
+  std::cout << "Shapes deleted." << std::endl;
 }
 
 Shape *& RandParamsShapeFactory::registerShape(Shape *& pShape)

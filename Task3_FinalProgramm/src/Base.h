@@ -21,7 +21,7 @@ class Named : public virtual Printable
 {
 public:
   Named() = delete;
-  Named(std::string name) : m_info(name)
+  Named(const std::string & name) : m_name(name)
   {
   }
   Named(const Named & name) = delete;
@@ -30,9 +30,9 @@ public:
 protected:
   virtual void print(std::ostream & os) const override
   {
-    os << m_info;
+    os << m_name;
   }
 
 private:
-  std::string m_info;
+  std::string m_name;
 };

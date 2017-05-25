@@ -18,6 +18,9 @@ public:
   Shape * createPolyline();
   Shape * createPolygone();
 
+  //Delete all shapes which created by factory. 
+  void deleteCreatedShapes();
+
 private:
 
   Shape *& registerShape(Shape *& pShape);

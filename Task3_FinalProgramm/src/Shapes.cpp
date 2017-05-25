@@ -33,11 +33,17 @@ Point::Point() : Named("Point")
 {
 }
 
-Point::Point(double x, double y) : Named("Point"), m_x(x), m_y(y)
+Point::Point(double x, double y) 
+  : Named("Point"),
+  m_x(x),
+  m_y(y)
 {
 }
 
-Point::Point(const Point & point) : Named("Point"), m_x(point.m_x), m_y(point.m_y)
+Point::Point(const Point & point) 
+  : Named("Point"),
+  m_x(point.m_x),
+  m_y(point.m_y)
 {
 }
 
@@ -63,11 +69,16 @@ void Point::print(std::ostream & os) const
          std::string(", Y : ") <<  m_y << std::string(".\r\n");
 }
 
-Circle::Circle() : Named("Circle")
+Circle::Circle() 
+  : Named("Circle")
 {
 }
 
-Circle::Circle(const Point & center, double radius) : Named("Circle"), m_center(center), m_radius(radius), m_area(M_PI * m_radius * m_radius)
+Circle::Circle(const Point & center, double radius) 
+  : Named("Circle"),
+  m_center(center),
+  m_radius(radius),
+  m_area(M_PI * m_radius * m_radius)
 {
   if (Mur::isNegative(m_radius))
   {
@@ -79,7 +90,11 @@ Circle::Circle(const Point & center, double radius) : Named("Circle"), m_center(
   }
 }
 
-Circle::Circle(const Circle & circle) : Named("Circle"), m_center(circle.m_center), m_radius(circle.m_radius), m_area(circle.m_area)
+Circle::Circle(const Circle & circle) 
+  : Named("Circle"),
+  m_center(circle.m_center),
+  m_radius(circle.m_radius),
+  m_area(circle.m_area)
 {
 }
 
@@ -95,13 +110,15 @@ Rectangle::Rectangle() : Named("Rectangle")
 {
 }
 
-Rectangle::Rectangle(const Point & first, const Point & second) : Named("Rectangle"), m_first(first),
-                                                                  m_second(first.getX(), second.getY()),
-                                                                  m_third(second),
-                                                                  m_fourth(second.getX(), first.getY()),
-                                                                  m_length(first.getX() - second.getX()),
-                                                                  m_width(first.getY() - second.getY()),
-                                                                  m_area(m_length * m_width)
+Rectangle::Rectangle(const Point & first, const Point & second) 
+  : Named("Rectangle"),
+  m_first(first),
+  m_second(first.getX(), second.getY()),
+  m_third(second),
+  m_fourth(second.getX(), first.getY()),
+  m_length(first.getX() - second.getX()),
+  m_width(first.getY() - second.getY()),
+  m_area(m_length * m_width)
 {
   if (Mur::isNegative(m_length))
   {
@@ -112,7 +129,9 @@ Rectangle::Rectangle(const Point & first, const Point & second) : Named("Rectang
     throw std::invalid_argument("Zero length.\r\n");
   }
   if (Mur::isNegative(m_width))
+  {
     throw std::invalid_argument("Negative width.\r\n");
+  }
   if (Mur::isZero(m_width))
   {
     throw std::invalid_argument("Zero width.\r\n");
@@ -120,9 +139,15 @@ Rectangle::Rectangle(const Point & first, const Point & second) : Named("Rectang
 
 }
 
-Rectangle::Rectangle(const Rectangle & rectangle) : Named("Rectangle"), m_first(rectangle.m_first), m_second(rectangle.m_second),
-                                                    m_third(rectangle.m_third), m_fourth(rectangle.m_fourth), m_length(rectangle.m_length),
-                                                    m_width(rectangle.m_width), m_area(rectangle.m_area)
+Rectangle::Rectangle(const Rectangle & rectangle) 
+  : Named("Rectangle"),
+  m_first(rectangle.m_first),
+  m_second(rectangle.m_second),
+  m_third(rectangle.m_third),
+  m_fourth(rectangle.m_fourth),
+  m_length(rectangle.m_length),
+  m_width(rectangle.m_width),
+  m_area(rectangle.m_area)
 {
 }
 
@@ -142,12 +167,14 @@ Square::Square() : Named("Square")
 {
 }
 
-Square::Square(const Point & first, const Point & second) : Named("Square"), m_first(first),
-                                                            m_second(first.getX(), second.getY()),
-                                                            m_third(second),
-                                                            m_fourth(second.getX(), first.getY()),
-                                                            m_sideLength(first.getX() - second.getX()),
-                                                            m_area(m_sideLength * m_sideLength)
+Square::Square(const Point & first, const Point & second) 
+  : Named("Square"),
+  m_first(first),
+  m_second(first.getX(), second.getY()),
+  m_third(second),
+  m_fourth(second.getX(), first.getY()),
+  m_sideLength(first.getX() - second.getX()),
+  m_area(m_sideLength * m_sideLength)
 {
   if (Mur::isNegative(m_sideLength))
   {
@@ -159,9 +186,14 @@ Square::Square(const Point & first, const Point & second) : Named("Square"), m_f
   }
 }
 
-Square::Square(const Square & square) : Named("Square"), m_first(square.m_first), m_second(square.m_second),
-                                                         m_third(square.m_third), m_fourth(square.m_fourth),
-                                                         m_sideLength(square.m_sideLength), m_area(square.m_area)
+Square::Square(const Square & square) 
+  : Named("Square"),
+  m_first(square.m_first),
+  m_second(square.m_second),
+  m_third(square.m_third),
+  m_fourth(square.m_fourth),
+  m_sideLength(square.m_sideLength),
+  m_area(square.m_area)
 {
 }
 
@@ -181,8 +213,10 @@ Polyline::Polyline() : Named("Polyline")
 {
 }
 
-Polyline::Polyline(const Polyline & polyline) : Named("Polyline"), m_nbSegments(polyline.m_nbSegments),
-                                                m_length(polyline.m_length)
+Polyline::Polyline(const Polyline & polyline) 
+  : Named("Polyline"),
+  m_nbSegments(polyline.m_nbSegments),
+  m_length(polyline.m_length)
 {
   if (polyline.m_aNodes.empty())
   {
@@ -198,7 +232,7 @@ void Polyline::addPoint(const Point & point)
 {
   try
   {
-    addPointImp(point);
+    addPointImpl(point);
   }
   catch (const std::invalid_argument & e)
   {
@@ -206,7 +240,7 @@ void Polyline::addPoint(const Point & point)
   }
 }
 
-void Polyline::addPointImp(const Point & point)
+void Polyline::addPointImpl(const Point & point)
 {
   for (const auto & it : m_aNodes)
   {
@@ -235,8 +269,10 @@ Polygon::Polygon() : Named("Polygon")
 {
 }
 
-Polygon::Polygon(const Polygon & polygon) : Named("Polygon"), m_nbSegments(polygon.m_nbSegments),
-                                            m_perimeter(polygon.m_perimeter)
+Polygon::Polygon(const Polygon & polygon) 
+  : Named("Polygon"),
+  m_nbSegments(polygon.m_nbSegments),
+  m_perimeter(polygon.m_perimeter)
 {
   if (polygon.m_aNodes.empty())
   {
@@ -256,7 +292,7 @@ void Polygon::addPoint(const Point & point)
 {
   try
   {
-    addPointImp(point);
+    addPointImpl(point);
   }
   catch (const std::invalid_argument & e)
   {
@@ -266,10 +302,6 @@ void Polygon::addPoint(const Point & point)
 
 void Polygon::finishCreating()
 {
-  if (m_aNodes.empty())
-  {
-    throw std::invalid_argument("Polygon does not have nodes.\r\n");
-  }
   if (3 > m_aNodes.size())
   {
     throw std::invalid_argument("Polygon does not have enough nodes.\r\n");
@@ -286,7 +318,7 @@ void Polygon::print(std::ostream & os) const
      << "Perimeter " << m_perimeter << std::string(".\r\n");
 }
 
-void Polygon::addPointImp(const Point & point)
+void Polygon::addPointImpl(const Point & point)
 {
   for (const auto & it : m_aNodes)
   {
